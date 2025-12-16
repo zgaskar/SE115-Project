@@ -1,6 +1,4 @@
 // Main.java — Students version
-import java.io.*;
-import java.util.*;
 
 public class Main {
     static final int MONTHS = 12;
