@@ -103,15 +103,78 @@ public class Main {
     }
 
     public static int commodityProfitInRange(String commodity, int from, int to) {
-        return 1234;
+        int commIdx = -1;
+
+        for (int j = 0; j < COMMS; j++) {
+            if (commodities[j].equals(commodity)) {
+                commIdx = j;
+                break;
+            }
+        }
+            if(commIdx == -1 || from > to || from<1 || to >28){
+                return -99999;
+            }
+            int totalProfit = 0;
+
+        for (int m = 0; m < MONTHS; m++) {
+            for (int d = from - 1; d <= to - 1; d++) {
+                totalProfit += profits[m][d][commIdx];
+            }
+        }return totalProfit;
     }
 
-    public static int bestDayOfMonth(int month) { 
-        return 1234; 
+    public static int bestDayOfMonth(int month) {
+
+    if(month>=MONTHS || month<0){
+            return -1;
+        }
+        int maxProfit = Integer.MIN_VALUE;
+        int bestDayIdx = -1;
+
+        for (int d = 0; d <DAYS ; d++) {
+            int dailyTotal = 0;
+            for (int c = 0; c <COMMS ; c++) {
+                dailyTotal += profits[month][d][c];
+            }
+            if(dailyTotal > maxProfit){
+                maxProfit = dailyTotal;
+                bestDayIdx = d;
+            }
+        }return bestDayIdx + 1;
     }
     
-    public static String bestMonthForCommodity(String comm) { 
-        return "DUMMY"; 
+    public static String bestMonthForCommodity(String comm) {
+        int commIdx = -1;
+
+        for (int j = 0; j < COMMS; j++) {
+            if(commodities[j].equals(comm)){
+                commIdx = j;
+                break;
+            }
+        }
+        if(commIdx == -1){
+            return "INVALID_COMMODITY";
+        }
+
+        int maxProfit = Integer.MIN_VALUE;
+        int bestMonthIdx = -1;
+
+        for (int m = 0; m < MONTHS ; m++) {
+            int currentMonthTotal = 0;
+            for (int d = 0; d <DAYS ; d++) {
+                currentMonthTotal += profits[m][d][commIdx];
+            }
+            if(currentMonthTotal >maxProfit){
+                maxProfit = currentMonthTotal;
+                bestMonthIdx = m;
+            }
+        }
+
+        if(bestMonthIdx != -1){
+            return months[bestMonthIdx];
+        }
+
+        return "NO_DATA";
     }
 
     public static int consecutiveLossDays(String comm) { 
@@ -135,8 +198,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        System.out.println("Çalışma Yeri: " + System.getProperty("user.dir"));
         loadData();
         System.out.println("Data loaded – ready for queries");
+
     }
 }
