@@ -1,16 +1,64 @@
 // Main.java — Students version
+import java.util.Scanner;
+import java.io.IOException;
+import java.nio.file.Paths;
 
 public class Main {
+
     static final int MONTHS = 12;
     static final int DAYS = 28;
     static final int COMMS = 5;
     static String[] commodities = {"Gold", "Oil", "Silver", "Wheat", "Copper"};
     static String[] months = {"January","February","March","April","May","June",
                               "July","August","September","October","November","December"};
+    public static int[][][] profits = new int[MONTHS][DAYS][COMMS];
+
     
 
     // ======== REQUIRED METHOD LOAD DATA (Students fill this) ========
     public static void loadData() {
+        Scanner fileReader = null;
+
+        for (int i = 0; i < MONTHS ; i++) {
+            String fileName = "Data_Files/" + months[i] + ".txt";
+            try{
+                fileReader = new Scanner(Paths.get(fileName));
+                fileReader.nextLine();
+
+                while(fileReader.hasNextLine()){
+
+                    String[] parts = fileReader.nextLine().split(",");
+
+                    int daysValue = Integer.parseInt(parts[0].trim())-1;
+                    String emtia = parts[1];
+                    int commodityIndex = -1;
+                    int profitValue = Integer.parseInt(parts[2].trim());
+
+                    for (int j = 0; j < COMMS; j++) {
+                        if(commodities[j].equals(emtia)){
+                            commodityIndex = j;
+                            break;
+                        }
+
+                    }
+                    if(commodityIndex != -1){
+                        profits[i][daysValue][commodityIndex] = profitValue;
+                    }
+
+
+
+
+                }
+            } catch (Exception e) {
+                System.out.println("File not found: " + fileName);
+            } finally{
+                if(fileReader != null){
+                    fileReader.close();
+                }
+
+            }
+            
+        }
     }
 
     // ======== 10 REQUIRED METHODS (Students fill these) ========
@@ -56,6 +104,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        System.out.println("Çalışma Yeri: " + System.getProperty("user.dir"));
         loadData();
         System.out.println("Data loaded – ready for queries");
     }
