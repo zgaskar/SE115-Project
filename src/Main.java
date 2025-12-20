@@ -44,10 +44,6 @@ public class Main {
                     if(commodityIndex != -1){
                         profits[i][daysValue][commodityIndex] = profitValue;
                     }
-
-
-
-
                 }
             } catch (Exception e) {
                 System.out.println("File not found: " + fileName);
@@ -70,8 +66,6 @@ public class Main {
 
        int maxProfit = Integer.MIN_VALUE;
        String bestCommName = "";
-
-
            for (int c = 0; c < COMMS ; c++) {
                int currentCommTotal = 0;
                for (int d = 0; d < DAYS; d++) {
@@ -94,6 +88,7 @@ public class Main {
         if(month<0 || month >= 12 || dayIdx<0 || dayIdx >= 28){
             return -99999;
         }
+
 
         int total = 0;
         for(int k = 0; k<COMMS; k++){
@@ -177,12 +172,69 @@ public class Main {
         return "NO_DATA";
     }
 
-    public static int consecutiveLossDays(String comm) { 
-        return 1234; 
+    public static int consecutiveLossDays(String comm) {
+        int commIdx = -1;
+
+        for (int j = 0; j < COMMS; j++) {
+            if(commodities[j].equals(comm)){
+                commIdx = j;
+                break;
+            }
+        }
+        if(commIdx == -1){
+            return -1;
+        }
+
+        int maxStreak = 0;
+        int currentStreak = 0;
+
+        for (int m = 0; m < MONTHS; m++) {
+            for (int d = 0; d < DAYS ; d++) {
+                int profit = profits[m][d][commIdx];
+
+                if(profit<0){
+                    currentStreak++;
+                }else{
+                    if(currentStreak>maxStreak){
+                        maxStreak = currentStreak;
+                    }
+                    currentStreak=0;
+                }
+
+            }
+
+        }
+        if(currentStreak > maxStreak){
+            maxStreak = currentStreak;
+        }
+
+        return maxStreak;
     }
     
-    public static int daysAboveThreshold(String comm, int threshold) { 
-        return 1234; 
+    public static int daysAboveThreshold(String comm, int threshold) {
+        int commIdx = -1;
+
+        for (int j = 0; j < COMMS; j++) {
+            if(commodities[j].equals(comm)){
+                commIdx = j;
+                break;
+            }
+        }
+        if(commIdx == -1){
+            return -1;
+        }
+
+        int count = 0;
+
+        for (int m = 0; m < MONTHS; m++) {
+            for (int d = 0; d < DAYS ; d++) {
+                if (profits[m][d][commIdx] > threshold){
+                    count++;
+                }
+            }
+        }
+
+        return count;
     }
 
     public static int biggestDailySwing(int month) { 
