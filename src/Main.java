@@ -45,7 +45,7 @@ public class Main {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("File not found: " + fileName);
+
             } finally {
                 if (fileReader != null) {
                     fileReader.close();
@@ -244,27 +244,25 @@ public class Main {
         }
 
         int maxSwing = 0;
+        int prevDayTotal = 0;
 
-        for (int d = 0; d < DAYS; d++) {
-            int dailyMax = Integer.MIN_VALUE;
-            int dailyMin = Integer.MAX_VALUE;
+        for (int c = 0; c < COMMS; c++) {
+            prevDayTotal += profits[month][0][c];
+        }
 
+        for (int d = 1; d < DAYS; d++) {
+            int currentDayTotal = 0;
             for (int c = 0; c < COMMS; c++) {
-               int profit = profits[month][d][c];
-
-                if (profit > dailyMax) {
-                    dailyMax = profit;
-                }
-                if (profit < dailyMin) {
-                    dailyMin = profit;
-                }
+                currentDayTotal += profits[month][d][c];
             }
 
-            int currentSwing = dailyMax - dailyMin;
-
-            if (currentSwing > maxSwing) {
-                maxSwing = currentSwing;
+            int swing = Math.abs(currentDayTotal- prevDayTotal);
+            if(swing > maxSwing){
+                maxSwing = swing;
             }
+
+            prevDayTotal = currentDayTotal;
+
         }
         return maxSwing;
     }
@@ -304,33 +302,36 @@ public class Main {
         } else if (total2 > total1) {
             return c2 + " is better by " + diff;
         } else {
-          return "EQUAL";
+          return "Equal";
         }
     }
     
     public static String bestWeekOfMonth(int month) {
         if(month<0 || month>= MONTHS){
-                return "INVALID_MOTH";
+                return "INVALID_MONTH";
         }
 
         int maxProfit = Integer.MIN_VALUE;
-        int bestStartIdx = -1;
-        for (int d = 0; d < DAYS ; d+=7) {
-            int currentWeekProfit = 0;
-            for (int k = 0; k < 7 ; k++) {
-            for (int c = 0; c < COMMS; c++) {
-                int profit = profits[month][d][c];
-                currentWeekProfit += profit;
-                }
-            }
-            if(currentWeekProfit > maxProfit){
-                maxProfit = currentWeekProfit;
-                bestStartIdx = d;
-            }
-        }
-        int week = (bestStartIdx / 7) + 1;
+        int bestWeek =  -1;
 
-        return "Week " + week;
+        for (int week = 0; week < 4; week++) {
+            int startDay = week * 7;
+            int weekTotal = 0;
+
+            for (int d = startDay; d < startDay + 7; d++) {
+                for (int c = 0; c < COMMS; c++) {
+                    weekTotal += profits[month][d][c];
+                }
+                
+            }
+
+            if(weekTotal > maxProfit){
+                maxProfit = weekTotal;
+                bestWeek = week +1;
+            }
+            
+        }
+        return "Week " + bestWeek;
     }
 
     public static void main(String[] args) {
